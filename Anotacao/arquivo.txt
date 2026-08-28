@@ -1,0 +1,11 @@
+
+ESTRUTURA DO PROJETO
+    Main inicia o projeto
+    Quando fazemos uma requisição, primeiro arquivo a ser chamado é o controller
+    No controler ele indentifica e chama o serviço
+    serviço é responsavel por fazer a lógica pesada, cominicação com o banco de dado, faz alguma logíca e retorna para o usuario.
+    Module arquivo onde de fato eu terei a cinfiguração do item 
+
+    *Basicamente o main inicia, o controler ve a requisição a chamada que se quer entrar, entra na rota no método  o  serviço faz a logica e devolve para o usuario.
+
+    *Na criação de um novo modulo, preisa estanciar ele no modulo principal 

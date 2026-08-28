@@ -1,0 +1,16 @@
+git init
+    dento do local.
+rm -rf primeiro_app/.git
+    Se for framework nest angular para não ter git conflitante.
+git remote add origin e o link do repositório
+
+git add . 
+    Prepara para o commit 
+
+git commit -m "nome"
+    
+git branch -M main 
+    cria uma nova branche e se trasfere pra ela 
+
+git push -u origin main
+    sobre o repositório
