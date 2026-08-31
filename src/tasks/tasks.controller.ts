@@ -1,6 +1,6 @@
 //controller - responsavel por receber a requisição, ele vai ver qual logica esta sendo chamada e devolve a resposta
 
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { updateTaskDto } from './dto/update-task.dto';
@@ -29,7 +29,7 @@ export class TasksController {
     }
 
     @Patch(":id")
-    updateTask(@Param("id") id: string, @Body() updateTaskDto: updateTaskDto){
+    updateTask(@Param("id", ParseIntPipe) id: number, @Body() updateTaskDto: updateTaskDto){
     
         return this.tasksService.update(id, updateTaskDto)
 

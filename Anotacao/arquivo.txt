@@ -9,3 +9,19 @@ ESTRUTURA DO PROJETO
     *Basicamente o main inicia, o controler ve a requisição a chamada que se quer entrar, entra na rota no método  o  serviço faz a logica e devolve para o usuario.
 
     *Na criação de um novo modulo, preisa estanciar ele no modulo principal 
+
+PRISMA 
+    Comandos: 
+        npm install prisma@7.10.0 @types/node @types/better-sqlite3 --save-dev
+        npm install @prisma/client@7.10.0 @prisma/adapter-better-sqlite3 dotenv
+
+            prisma- A CLI do Prisma para executar comandos como prisma init, prisma db pull, eprisma generate
+            @prisma/client- A biblioteca Prisma Client para consultar seu banco de dados
+            @prisma/adapter-better-sqlite3- O adaptador de driver SQLite que conecta o Prisma Client ao seu banco de dados
+            @types/better-sqlite3- Definições de tipo TypeScript para better-sqlite3
+            dotenv- Carrega variáveis ​​de ambiente do seu .envarquivo
+
+        npx prisma init 
+            Cria um prisma/diretório com um schema.prismaarquivo contendo a configuração de conexão do seu banco de dados.
+            Cria um .envarquivo no diretório raiz para variáveis ​​de ambiente.
+            Cria um prisma.config.tsarquivo para configuração do Prisma.

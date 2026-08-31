@@ -11,7 +11,10 @@ import { ValidationPipe } from '@nestjs/common';
 //Arquivo que inicia o projeto.
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true, //remove as chaves que não estão no dto(remove propiedades que não existe)
+    //transform: true, faz traformação no serviço, então se é string e quero receber como number, ele funciona. mas aplica global, então pode dar erro 
+  }))
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

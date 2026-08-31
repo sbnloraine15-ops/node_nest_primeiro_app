@@ -48,7 +48,7 @@ export class TasksService {
         this.tasks.push(newTask)
     }
 
-    update(id: string, updateTaskdto: updateTaskDto) {
+    update(id: number, updateTaskdto: updateTaskDto) {
         //a função devolve qual a posição e se existe
         const taskIndex = this.tasks.findIndex(task => task.id === Number(id))
 
