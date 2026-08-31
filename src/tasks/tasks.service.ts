@@ -1,3 +1,5 @@
+//resposavel pela lógica pesada.
+
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Task } from './entittes/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';

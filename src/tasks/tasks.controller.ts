@@ -1,3 +1,5 @@
+//controller - responsavel por receber a requisição, ele vai ver qual logica esta sendo chamada e devolve a resposta
+
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
