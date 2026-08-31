@@ -18,7 +18,7 @@ export class TasksController {
     @Get(":id")
     findOneTask(@Param('id') id: string){
         console.log(id)
-        return this.tasksService.findOne(id)
+        return this.tasksService.findOne(Number(id))
     }
 
     @Post("/create")
@@ -36,7 +36,7 @@ export class TasksController {
     }
 
     @Delete(":id")
-    deleteTask(@Param("id")id: string){
+    deleteTask(@Param("id", ParseIntPipe)id: number){
         return this.tasksService.delete(id)
     }
 }

@@ -6,6 +6,4 @@ CREATE TABLE "task" (
     "description" TEXT NOT NULL,
     "completed" BOOLEAN NOT NULL,
     "CreatedAt" DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
-
+);  

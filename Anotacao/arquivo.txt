@@ -25,3 +25,9 @@ PRISMA
             Cria um prisma/diretório com um schema.prismaarquivo contendo a configuração de conexão do seu banco de dados.
             Cria um .envarquivo no diretório raiz para variáveis ​​de ambiente.
             Cria um prisma.config.tsarquivo para configuração do Prisma.
+
+
+        npx migrate dev 
+
+        npx migrate generate 
+            gera a tipagem para poder usar a tipagem.
