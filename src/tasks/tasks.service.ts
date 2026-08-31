@@ -5,6 +5,7 @@ import { Task } from './entittes/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { updateTaskDto } from './dto/update-task.dto';
 import { PrismasService } from 'src/prismas/prismas.service';
+import { PaginationDto } from 'src/app/common/dto/pagination.dto';
 
 @Injectable()
 export class TasksService {
@@ -26,8 +27,16 @@ export class TasksService {
         }
     ]
 
-    async findAll() {
-        const allTasks = await this.prisma.task.findMany()
+    async findAll(paginationDto?: PaginationDto) {
+        const limit = paginationDto?.limit ?? 10;
+        const offset = paginationDto?.offset ?? 0;
+        const allTasks = await this.prisma.task.findMany({
+            take: limit,
+            skip: offset, 
+            orderBy:{
+                CreatedAt : "desc"
+            }
+        })
         return allTasks
     }
 
@@ -98,7 +107,7 @@ export class TasksService {
             return {
                 message: "tarefa deletada com sucesso"
             }
-        }catch(err){
+        } catch (err) {
             throw new HttpException('Falha ao deletar essa tarefa', HttpStatus.BAD_REQUEST)
         }
 
