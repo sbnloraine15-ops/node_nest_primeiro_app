@@ -64,7 +64,7 @@ export class TasksService {
 
     async create(createTaskdto: CreateTaskDto) {
         const newTask = await this.prisma.task.create({
-            data: {
+            data: { 
                 name: createTaskdto.name,
                 description: createTaskdto.description,
                 completed: false

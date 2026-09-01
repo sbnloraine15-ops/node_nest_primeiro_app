@@ -3,8 +3,10 @@ import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { PrismaClient } from 'generated/prisma/client';
 
 
+
 @Injectable()
 export class PrismasService extends PrismaClient implements OnModuleInit {
+    
     
     constructor() {
         const connectionString = process.env.DATABASE_URL ?? 'file:./dev.db';

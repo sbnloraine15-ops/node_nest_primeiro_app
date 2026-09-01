@@ -1,9 +1,0 @@
--- Active: 1786539874530@@127.0.0.1@3306
--- CreateTable
-CREATE TABLE "task" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "completed" BOOLEAN NOT NULL,
-    "CreatedAt" DATETIME DEFAULT CURRENT_TIMESTAMP
-);  
