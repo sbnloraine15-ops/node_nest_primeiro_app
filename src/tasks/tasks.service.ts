@@ -1,43 +1,53 @@
 //resposavel pela lógica pesada.
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UseInterceptors } from '@nestjs/common';
 import { Task } from './entittes/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { updateTaskDto } from './dto/update-task.dto';
 import { PrismasService } from 'src/prismas/prismas.service';
 import { PaginationDto } from 'src/app/common/dto/pagination.dto';
+import { LoggerInterceptor } from './interceptors/logger.interceptor';
 
 @Injectable()
+
 export class TasksService {
     constructor(private prisma: PrismasService) { }
 
-    private tasks: Task[] = [
-        {
-            id: 1,
-            name: "Realizar atividades de aprendizado",
-            description: "Fixar conteudo",
-            completed: false,
-        },
 
-        {
-            id: 2,
-            name: "intem dois da lista",
-            description: "item 3 da lista",
-            completed: false,
-        }
-    ]
 
     async findAll(paginationDto?: PaginationDto) {
+        console.log("Rotas")
         const limit = paginationDto?.limit ?? 10;
         const offset = paginationDto?.offset ?? 0;
         const allTasks = await this.prisma.task.findMany({
             take: limit,
-            skip: offset, 
-            orderBy:{
-                CreatedAt : "desc"
+            skip: offset,
+            orderBy: {
+                CreatedAt: "desc"
             }
         })
         return allTasks
+    }
+
+    async LocalDate(data: string) {
+        // Quebra a string "2026-08-31" em partes
+        const [ano, mes, dia] = data.split('-').map(Number);
+
+        // Cria a data usando o horário local (mês começa em 0 no JS, por isso mes - 1)
+        const inicioDoDia = new Date(ano, mes - 1, dia, 0, 0, 0, 0);
+        const fimDoDia = new Date(ano, mes - 1, dia, 23, 59, 59, 999);
+
+        const dateTask = await this.prisma.task.findMany({
+            where: {
+                CreatedAt: {
+                    gte: inicioDoDia,
+                    lte: fimDoDia,
+                }
+            }
+        });
+
+        return dateTask
+
     }
 
     async findOne(id: number) {
@@ -113,4 +123,6 @@ export class TasksService {
 
 
     }
+
+
 }
