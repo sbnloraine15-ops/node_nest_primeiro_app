@@ -30,23 +30,32 @@ export class TasksService {
     }
 
     async LocalDate(data: string) {
-        // Quebra a string "2026-08-31" em partes
-        const [ano, mes, dia] = data.split('-').map(Number);
 
-        // Cria a data usando o horário local (mês começa em 0 no JS, por isso mes - 1)
-        const inicioDoDia = new Date(ano, mes - 1, dia, 0, 0, 0, 0);
-        const fimDoDia = new Date(ano, mes - 1, dia, 23, 59, 59, 999);
+        try {
+            // Quebra a string "2026-08-31" em partes
+            const [ano, mes, dia] = data.split('-').map(Number);
 
-        const dateTask = await this.prisma.task.findMany({
-            where: {
-                CreatedAt: {
-                    gte: inicioDoDia,
-                    lte: fimDoDia,
+            // Cria a data usando o horário local (mês começa em 0 no JS, por isso mes - 1)
+            const inicioDoDia = new Date(Date.UTC(ano, mes - 1, dia, 0, 0, 0, 0));
+            const fimDoDia = new Date(Date.UTC(ano, mes - 1, dia, 23, 59, 59, 999));
+
+            const dateTask = await this.prisma.task.findMany({
+                where: {
+                    CreatedAt: {
+                        gte: inicioDoDia,
+                        lte: fimDoDia,
+                    }
                 }
-            }
-        });
+            });
 
-        return dateTask
+            if (!dateTask || dateTask.length === 0) {
+                throw new HttpException("Nenhuma data encontrada", HttpStatus.BAD_REQUEST)
+            }
+
+            return dateTask
+        }catch(err){
+            throw new HttpException("Erro ao realizar essa operação", HttpStatus.BAD_REQUEST)
+        }
 
     }
 
@@ -58,20 +67,26 @@ export class TasksService {
         })
         if (task?.name) return task;
 
-        throw new HttpException("Essa tarefa não existe", 404)
+        throw new HttpException("Essa tarefa não existe", HttpStatus.BAD_REQUEST)
         //throw new NotFoundExcepition("Esta tarefa não existe")
     }
 
     async create(createTaskdto: CreateTaskDto) {
-        const newTask = await this.prisma.task.create({
-            data: { 
-                name: createTaskdto.name,
-                description: createTaskdto.description,
-                completed: false
-            }
-        })
+        try {
+            const newTask = await this.prisma.task.create({
+                data: {
+                    name: createTaskdto.name,
+                    description: createTaskdto.description,
+                    completed: false,
+                    UserId: createTaskdto.UserId
+                }
+            })
 
-        return newTask
+            return newTask
+        } catch (err) {
+            throw new HttpException('Falha ao criar essa tarefa', HttpStatus.BAD_REQUEST)
+
+        }
     }
 
     async update(id: number, updateTaskdto: updateTaskDto) {

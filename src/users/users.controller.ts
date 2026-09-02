@@ -11,7 +11,9 @@ export class UsersController {
 
     @Get(':id')
     findOneUser(@Param('id', ParseIntPipe) id: number) {
-        return this.userService.findAllUser(Number (id))
+
+        console.log('Token test:', process.env.TOKEN_KEY)
+        return this.userService.findOneUser(Number (id))
     }
 
     @Post('/create')
@@ -26,7 +28,8 @@ export class UsersController {
     }
 
     @Delete(':id')
-        deleteUseer(@Param('id', ParseIntPipe)id: number){
+        deleteUser(@Param('id', ParseIntPipe)id: number){
+            return this.userService.delete(id)
 
         }
     

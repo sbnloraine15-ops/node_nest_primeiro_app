@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, MinLength } from "class-validator";
+import { IsNotEmpty, IsNumber, isNumber, IsString, MinLength } from "class-validator";
 /*
 DTO > Data Trasfer Object(Objecto de trasferencia de dados)
     >Validar dados, trasformar dados.
@@ -14,5 +14,9 @@ export class CreateTaskDto{
 
     @IsString()
     @IsNotEmpty()
-    readonly description!: string; 
+    readonly description!: string;
+    
+    @IsNumber()
+    @IsNotEmpty()
+    readonly UserId!: number
 }

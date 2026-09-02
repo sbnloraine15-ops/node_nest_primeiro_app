@@ -8,10 +8,15 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 export class UsersService {
     constructor(private prisma: PrismasService) { }
 
-    async findAllUser(id: number) {
+    async findOneUser(id: number) {
         const user = await this.prisma.user.findFirst({
             where: {
                 id: id
+            },select: {
+                id: true,
+                name: true,
+                email: true, 
+                Task: true
             }
         })
         if (user) return user;
@@ -67,6 +72,35 @@ export class UsersService {
             }
         })
         return UseUp
+
+    }
+
+    async delete(id: number) {
+        try {
+            const user = await this.prisma.user.findFirst({
+                where: {
+                    id: id
+                }
+            })
+
+            if (!user) {
+                throw new HttpException("Erro ao encontrar o usuario", HttpStatus.BAD_REQUEST)
+            }
+
+            const userEncontrado = await this.prisma.user.delete({
+                where: {
+                    id: user.id
+                }
+            })
+
+            return {
+                message: "Usuario apagado"
+            }
+
+        } catch (err) {
+            throw new HttpException("Erro ao deletar o usuario", HttpStatus.BAD_REQUEST)
+        }
+
 
     }
 
