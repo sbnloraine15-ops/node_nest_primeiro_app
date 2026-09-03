@@ -3,10 +3,15 @@ import { PrismasService } from 'src/prismas/prismas.service';
 import { CreateUserDto } from './dtos/create.dto';
 import { throwError } from 'rxjs';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { HashingServiceProtocol } from 'src/auth/hash/hashing.service';
+import { updateTaskDto } from 'src/tasks/dto/update-task.dto';
 
 @Injectable()
 export class UsersService {
-    constructor(private prisma: PrismasService) { }
+    constructor(
+        private prisma: PrismasService,
+        private readonly hashingService: HashingServiceProtocol
+    ) { }
 
     async findOneUser(id: number) {
         const user = await this.prisma.user.findFirst({
@@ -27,11 +32,15 @@ export class UsersService {
     async create(createUserDto: CreateUserDto) {
 
         try {
+
+            const passwordHash = await this.hashingService.hash(createUserDto.password)
+
+            
             const newUser = await this.prisma.user.create({
                 data: {
                     name: createUserDto.name,
                     email: createUserDto.email,
-                    passwordHash: createUserDto.password
+                    passwordHash: passwordHash
                 },
                 select: {
                     id: true,
@@ -57,13 +66,22 @@ export class UsersService {
         if (!usersId) {
             throw new HttpException("Erro ao encontrar o usuario", HttpStatus.BAD_REQUEST)
         }
+
+        const dataUser: {name?:string, passwordHash?: string} ={
+            name: updateUserDto.name ? updateUserDto.name : usersId.name,
+        }
+
+        if(updateUserDto?.password){
+            const passwordHash = await this.hashingService.hash(updateUserDto?.password)
+            dataUser['passwordHash'] = passwordHash
+        }
         const UseUp = await this.prisma.user.update({
             where: {
                 id: usersId.id
             }, data: {
                 name: updateUserDto.name ? updateUserDto.name : usersId.name,
                 email: updateUserDto.email ? updateUserDto.email : usersId.email,
-                passwordHash: updateUserDto.password ? updateUserDto.password : usersId.passwordHash
+                passwordHash: dataUser.passwordHash ? dataUser.passwordHash : usersId.passwordHash
 
             }, select: {
                 id: true,
@@ -87,7 +105,9 @@ export class UsersService {
                 throw new HttpException("Erro ao encontrar o usuario", HttpStatus.BAD_REQUEST)
             }
 
-            const userEncontrado = await this.prisma.user.delete({
+            
+
+            const userEncontrado = await this.prisma.user.delete({ 
                 where: {
                     id: user.id
                 }

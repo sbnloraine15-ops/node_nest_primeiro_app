@@ -4,15 +4,15 @@ import { AppService } from './app.service';
 import { TasksModule } from 'src/tasks/tasks.module';
 import { UsersModule } from 'src/users/users.module';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthAdiminGuard } from './common/guards/adimin.guard';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),//carrega a variavel de ambiente emm todos os modulos  
     TasksModule,
-    UsersModule
+    UsersModule, 
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService

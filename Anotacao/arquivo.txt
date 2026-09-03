@@ -31,3 +31,10 @@ PRISMA
 
         npx migrate generate 
             gera a tipagem para poder usar a tipagem.
+
+
+        npm install bcryptjs - biblioteca de criptografia
+
+        npm i --save @types/bcryptjs - tipagens 
+
+        npm i @nestjs/jwt - autenticação de endpionts por token 
