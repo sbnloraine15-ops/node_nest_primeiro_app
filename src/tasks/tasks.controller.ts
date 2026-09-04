@@ -6,8 +6,10 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { updateTaskDto } from './dto/update-task.dto';
 import { PaginationDto } from 'src/app/common/dto/pagination.dto';
 import { LoggerInterceptor } from './interceptors/logger.interceptor';
-import { BodyCreatInterceptor } from './interceptors/body-create-task.inteceptor';
 import { AuthAdiminGuard } from 'src/app/common/guards/adimin.guard';
+import { AuthTokenGuard } from 'src/auth/gurard/auth-token';
+import { TokenPayloadParam } from 'src/auth/param/token-payload.param';
+import { PayloadTokenDto } from 'src/auth/dto/payload-token.dto';
 
 @Controller('tasks')
 @UseInterceptors(LoggerInterceptor)
@@ -34,24 +36,36 @@ export class TasksController {
         return this.tasksService.findOne(Number(id))
     }
 
-    @UseInterceptors(BodyCreatInterceptor)
+    @UseGuards(AuthTokenGuard)
     @Post("/create")
-    createTask(@Body() createTaskDto: CreateTaskDto) {
+    createTask(
+        @Body() createTaskDto: CreateTaskDto,
+        @TokenPayloadParam() TokenPayload: PayloadTokenDto
+
+    ) {
         //passa o create aqui para receber as informações necessárias para criação
-        return this.tasksService.create(createTaskDto)
+        return this.tasksService.create(createTaskDto, TokenPayload)
 
     }
 
+    @UseGuards(AuthTokenGuard)
     @Patch(":id")
-    updateTask(@Param("id", ParseIntPipe) id: number, @Body() updateTaskDto: updateTaskDto) {
+    updateTask(
+        @Param("id", ParseIntPipe) id: number,
+        @Body() updateTaskDto: updateTaskDto,
+        @TokenPayloadParam() TokenPayload: PayloadTokenDto) {
 
-        return this.tasksService.update(id, updateTaskDto)
+        return this.tasksService.update(id, updateTaskDto, TokenPayload)
 
     }
 
+    @UseGuards(AuthTokenGuard)
     @Delete(":id")
-    deleteTask(@Param("id", ParseIntPipe) id: number) {
-        return this.tasksService.delete(id)
+    deleteTask(
+        @Param("id", ParseIntPipe) id: number,
+        @TokenPayloadParam() TokenPayload: PayloadTokenDto
+    ) {
+        return this.tasksService.delete(id, TokenPayload)
     }
 
 

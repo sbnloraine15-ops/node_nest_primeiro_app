@@ -12,6 +12,7 @@ export class AuthService {
     constructor(
         private prisma: PrismasService, 
         private readonly hashService: HashingServiceProtocol,
+        
 
         @Inject(jwtConfig.KEY)
         private readonly jwtconfiguration: ConfigType<typeof jwtConfig>, 
@@ -22,6 +23,7 @@ export class AuthService {
       const user = await this.prisma.user.findFirst({
         where:{
             email: singInDto.email, 
+            active: true
             
         }
       })

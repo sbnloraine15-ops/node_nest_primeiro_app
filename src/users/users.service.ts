@@ -1,10 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismasService } from 'src/prismas/prismas.service';
 import { CreateUserDto } from './dtos/create.dto';
 import { throwError } from 'rxjs';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { HashingServiceProtocol } from 'src/auth/hash/hashing.service';
 import { updateTaskDto } from 'src/tasks/dto/update-task.dto';
+import { PayloadTokenDto } from 'src/auth/dto/payload-token.dto';
 
 @Injectable()
 export class UsersService {
@@ -17,10 +18,10 @@ export class UsersService {
         const user = await this.prisma.user.findFirst({
             where: {
                 id: id
-            },select: {
+            }, select: {
                 id: true,
                 name: true,
-                email: true, 
+                email: true,
                 Task: true
             }
         })
@@ -35,7 +36,7 @@ export class UsersService {
 
             const passwordHash = await this.hashingService.hash(createUserDto.password)
 
-            
+
             const newUser = await this.prisma.user.create({
                 data: {
                     name: createUserDto.name,
@@ -56,44 +57,53 @@ export class UsersService {
 
     }
 
-    async update(id: number, updateUserDto: UpdateUserDto) {
-        const usersId = await this.prisma.user.findFirst({
-            where: {
-                id: id
-            },
+    async update(id: number, updateUserDto: UpdateUserDto, TokenPayload: PayloadTokenDto) {
 
-        })
-        if (!usersId) {
-            throw new HttpException("Erro ao encontrar o usuario", HttpStatus.BAD_REQUEST)
-        }
+        try {
+            const usersId = await this.prisma.user.findFirst({
+                where: {
+                    id: id
+                },
 
-        const dataUser: {name?:string, passwordHash?: string} ={
-            name: updateUserDto.name ? updateUserDto.name : usersId.name,
-        }
-
-        if(updateUserDto?.password){
-            const passwordHash = await this.hashingService.hash(updateUserDto?.password)
-            dataUser['passwordHash'] = passwordHash
-        }
-        const UseUp = await this.prisma.user.update({
-            where: {
-                id: usersId.id
-            }, data: {
-                name: updateUserDto.name ? updateUserDto.name : usersId.name,
-                email: updateUserDto.email ? updateUserDto.email : usersId.email,
-                passwordHash: dataUser.passwordHash ? dataUser.passwordHash : usersId.passwordHash
-
-            }, select: {
-                id: true,
-                name: true,
-                email: true
+            })
+            if (!usersId) {
+                throw new HttpException("Erro ao encontrar o usuario", HttpStatus.BAD_REQUEST)
             }
-        })
-        return UseUp
+
+            if(usersId.id !== TokenPayload.sub){
+                throw new HttpException("Acesso negado", HttpStatus.BAD_REQUEST)
+            }
+
+            const dataUser: { name?: string, passwordHash?: string } = {
+                name: updateUserDto.name ? updateUserDto.name : usersId.name,
+            }
+
+            if (updateUserDto?.password) {
+                const passwordHash = await this.hashingService.hash(updateUserDto?.password)
+                dataUser['passwordHash'] = passwordHash
+            }
+            const UseUp = await this.prisma.user.update({
+                where: {
+                    id: usersId.id
+                }, data: {
+                    name: updateUserDto.name ? updateUserDto.name : usersId.name,
+                    email: updateUserDto.email ? updateUserDto.email : usersId.email,
+                    passwordHash: dataUser.passwordHash ? dataUser.passwordHash : usersId.passwordHash
+
+                }, select: {
+                    id: true,
+                    name: true,
+                    email: true
+                }
+            })
+            return UseUp
+        } catch (err) {
+            throw new HttpException('Falha ao realizar a ação', HttpStatus.BAD_REQUEST)
+        }
 
     }
 
-    async delete(id: number) {
+    async delete(id: number, TokenPayload: PayloadTokenDto) {
         try {
             const user = await this.prisma.user.findFirst({
                 where: {
@@ -105,9 +115,13 @@ export class UsersService {
                 throw new HttpException("Erro ao encontrar o usuario", HttpStatus.BAD_REQUEST)
             }
 
-            
+            if(user.id !== TokenPayload.sub){
+                throw new HttpException("Acesso negado", HttpStatus.BAD_REQUEST)
+            }
 
-            const userEncontrado = await this.prisma.user.delete({ 
+
+
+            const userEncontrado = await this.prisma.user.delete({
                 where: {
                     id: user.id
                 }

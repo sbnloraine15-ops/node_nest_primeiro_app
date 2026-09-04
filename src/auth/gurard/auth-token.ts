@@ -7,48 +7,60 @@ import jwtConfig from "../config/jwt.config";
 import type { ConfigType } from "@nestjs/config";
 
 import { REQUEST_TOKEN_PAYLOAD_NAME } from "../common/auth.constanst";
+import { PrismasService } from "src/prismas/prismas.service";
 
 @Injectable()
-export class AuthTokenGuard implements CanActivate{
+export class AuthTokenGuard implements CanActivate {
 
     constructor(
 
-        private readonly jwtservice: JwtService, 
-        @Inject(jwtConfig.KEY)
-        
-        private readonly jwtConfiguration: ConfigType<typeof jwtConfig>
-     ){}
+        private readonly jwtservice: JwtService,
+        private readonly Prisma: PrismasService,
 
-    async canActivate(context: ExecutionContext):Promise<boolean> {
+        @Inject(jwtConfig.KEY)
+        private readonly jwtConfiguration: ConfigType<typeof jwtConfig>
+    ) { }
+
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const request: Request = context.switchToHttp().getRequest();
         const token = this.extractTokenHearder(request)
 
-        if(!token){
+        if (!token) {
             throw new HttpException('Token não encontrado', HttpStatus.UNAUTHORIZED)
         }
 
-        try{
+        try {
             const payload = await this.jwtservice.verifyAsync(token, this.jwtConfiguration)
 
             request[REQUEST_TOKEN_PAYLOAD_NAME] = payload
 
-        }catch(err){
+            const user = await this.Prisma.user.findFirst({
+                where: {
+                    id: payload?.id
+                }
+            })
+
+            if (!user?.active) {
+                throw new UnauthorizedException("Acesso não autorizado")
+            }
+
+        } catch (err) {
             console.log(err)
             throw new UnauthorizedException("Acesso não autorizado")
         }
-        
-        return true; 
+
+        return true;
 
     }
 
     extractTokenHearder(request: Request) {
         const authorization = request.headers?.authorization
 
-        if(!authorization || typeof authorization !== "string"){
+        if (!authorization || typeof authorization !== "string") {
             return
         }
 
-        return authorization.split(' ')[1]; 
+        return authorization.split(' ')[1];
     }
 
 }

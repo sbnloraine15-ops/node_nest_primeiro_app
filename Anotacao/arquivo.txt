@@ -38,3 +38,8 @@ PRISMA
         npm i --save @types/bcryptjs - tipagens 
 
         npm i @nestjs/jwt - autenticação de endpionts por token 
+
+
+        npm i --save-dev @types/multer
+            Tipagens do multer para uploud 
+            interceptação atraves de middleare
