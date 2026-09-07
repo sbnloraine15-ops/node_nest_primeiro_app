@@ -20,17 +20,28 @@ model task {
   completed   Boolean
 
   CreatedAt DateTime? @default(now())
-  UserId Int?
-  user User? @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  UserId    Int?
+  user      User?     @relation(fields: [UserId], references: [id], onDelete: Cascade)
 }
 
-model User{
-  id           Int @id @default(autoincrement())
+model User {
+  id           Int     @id @default(autoincrement())
   name         String
   email        String
   passwordHash String
   active       Boolean @default(true)
 
   CreatedAt DateTime? @default(now())
-  Task task[]
+  Task      task[]
+
+  CategoryId Int?
+  category   Category? @relation(fields: [CategoryId], references: [id], onDelete: Cascade)
+}
+
+//criar Categoria
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  user User[]
 }
