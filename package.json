@@ -74,12 +74,22 @@
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)s$": "ts-jest",
+     "\\.[jt]sx?$": ["babel-jest", { "excludeJestPreset": true }]
+
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/$1",
+      "^generated/(.*)$": "<rootDir>/../generated/$1",
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!@nestjs/mapped-types)"
+    ]
   }
 }

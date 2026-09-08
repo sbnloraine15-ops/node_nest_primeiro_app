@@ -43,3 +43,6 @@ PRISMA
         npm i --save-dev @types/multer
             Tipagens do multer para uploud 
             interceptação atraves de middleare
+
+
+https://github.com/aluiziodeveloper/nestjs-clean-arch/blob/main/jest.int.config.ts
