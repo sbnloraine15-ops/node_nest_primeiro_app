@@ -70,7 +70,7 @@ export class UsersService {
                 throw new HttpException("Erro ao encontrar o usuario", HttpStatus.BAD_REQUEST)
             }
 
-            if(usersId.id !== TokenPayload.sub){
+            if (usersId.id !== TokenPayload.sub) {
                 throw new HttpException("Acesso negado", HttpStatus.BAD_REQUEST)
             }
 
@@ -115,7 +115,7 @@ export class UsersService {
                 throw new HttpException("Erro ao encontrar o usuario", HttpStatus.BAD_REQUEST)
             }
 
-            if(user.id !== TokenPayload.sub){
+            if (user.id !== TokenPayload.sub) {
                 throw new HttpException("Acesso negado", HttpStatus.BAD_REQUEST)
             }
 
