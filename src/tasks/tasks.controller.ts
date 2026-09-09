@@ -10,18 +10,23 @@ import { AuthAdiminGuard } from 'src/app/common/guards/adimin.guard';
 import { AuthTokenGuard } from 'src/auth/gurard/auth-token';
 import { TokenPayloadParam } from 'src/auth/param/token-payload.param';
 import { PayloadTokenDto } from 'src/auth/dto/payload-token.dto';
+import { ApiBearerAuth, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ResponseTaskDto } from './dto/response.task.dto';
 
+
+@ApiOkResponse({ type: [ResponseTaskDto] })
 @Controller('tasks')
 @UseInterceptors(LoggerInterceptor)
 //@UseInterceptors(AuthAdiminGuard) - utiliza o guarde em todos os metodos no task
 export class TasksController {
     constructor(private readonly tasksService: TasksService) { }
 
+    //@UseGuards(AuthAdiminGuard) //--vai verificar só nesse método 
     @Get()
-    @UseGuards(AuthAdiminGuard) //--vai verificar só nesse método 
+    @ApiBearerAuth()
     findAllTasks(@Query() paginationDto: PaginationDto) {
         console.log(paginationDto)
-        return this.tasksService.findAll()
+        return this.tasksService.findAll(paginationDto)
     }
 
     @Get('date/:data')
@@ -49,6 +54,7 @@ export class TasksController {
     }
 
     @UseGuards(AuthTokenGuard)
+    @ApiBearerAuth()
     @Patch(":id")
     updateTask(
         @Param("id", ParseIntPipe) id: number,
@@ -60,6 +66,7 @@ export class TasksController {
     }
 
     @UseGuards(AuthTokenGuard)
+    @ApiBearerAuth()
     @Delete(":id")
     deleteTask(
         @Param("id", ParseIntPipe) id: number,

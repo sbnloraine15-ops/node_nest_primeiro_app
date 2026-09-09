@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber, isNumber, IsString, MinLength } from "class-validator";
 /*
 DTO > Data Trasfer Object(Objecto de trasferencia de dados)
@@ -7,11 +8,13 @@ DTO > Data Trasfer Object(Objecto de trasferencia de dados)
 
 
 export class CreateTaskDto{
+    @ApiProperty({ description: 'Descrição da tarefa' })
     @IsString()
     @MinLength(10)
     @IsNotEmpty()
     readonly name!: string; 
 
+    @ApiProperty({ description: 'Descrição da tarefa' })
     @IsString()
     @IsNotEmpty()
     readonly description!: string;

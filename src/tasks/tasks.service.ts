@@ -8,6 +8,7 @@ import { PrismasService } from 'src/prismas/prismas.service';
 import { PaginationDto } from 'src/app/common/dto/pagination.dto';
 import { LoggerInterceptor } from './interceptors/logger.interceptor';
 import { PayloadTokenDto } from 'src/auth/dto/payload-token.dto';
+import { ResponseTaskDto } from './dto/response.task.dto';
 
 @Injectable()
 
@@ -16,7 +17,7 @@ export class TasksService {
 
 
 
-    async findAll(paginationDto?: PaginationDto) {
+    async findAll(paginationDto?: PaginationDto): Promise<ResponseTaskDto[]> {
         console.log("Rotas")
         const limit = paginationDto?.limit ?? 10;
         const offset = paginationDto?.offset ?? 0;
@@ -28,9 +29,10 @@ export class TasksService {
             }
         })
         return allTasks
+       
     }
 
-    async LocalDate(data: string) {
+    async LocalDate(data: string): Promise<ResponseTaskDto[]> {
 
         try {
             // Quebra a string "2026-08-31" em partes
@@ -72,7 +74,7 @@ export class TasksService {
         //throw new NotFoundExcepition("Esta tarefa não existe")
     }
 
-    async create(createTaskdto: CreateTaskDto, TokenPayload: PayloadTokenDto) {
+    async create(createTaskdto: CreateTaskDto, TokenPayload: PayloadTokenDto): Promise<ResponseTaskDto> {
         try {
             const newTask = await this.prisma.task.create({
                 data: {
@@ -90,7 +92,7 @@ export class TasksService {
         }
     }
 
-    async update(id: number, updateTaskdto: updateTaskDto, TokenPayload: PayloadTokenDto) {
+    async update(id: number, updateTaskdto: updateTaskDto, TokenPayload: PayloadTokenDto): Promise<ResponseTaskDto>  {
 
         const findTask = await this.prisma.task.findFirst({
             where: {
