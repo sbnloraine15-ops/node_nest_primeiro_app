@@ -1,6 +1,7 @@
 
 
 
+import { PayloadTokenDto } from "src/auth/dto/payload-token.dto";
 import { CreateUserDto } from "../dtos/create.dto";
 import { UpdateUserDto } from "../dtos/update-user.dto";
 import { UsersController } from "../users.controller"
@@ -60,11 +61,17 @@ describe('Usesr Controller', () => {
         const userId = 1
         const updateUserDto: UpdateUserDto = {
 
-            name: 'Matheus Novo',
-
-
+            name: 'Matheus Novo'
         }
 
+        const tokenPayload: PayloadTokenDto = {
+            sub: userId,
+            aud: '',
+            email: '',
+            exp: 1,
+            iat: 1,
+            iss: ''
+        }
         const updateUser = {
             id: userId,
             name: 'Matheus',
@@ -72,6 +79,27 @@ describe('Usesr Controller', () => {
 
         }
 
+        await controller.upadateUser(userId, updateUserDto, tokenPayload)
 
+        expect(usersServiceMock.update).toHaveBeenCalledWith(userId, updateUserDto, tokenPayload)
+
+
+    })
+
+    it('shoud delete a user', async () => {
+        const userId = 1
+
+        const tokenPayload: PayloadTokenDto = {
+            sub: userId,
+            aud: '',
+            email: '',
+            exp: 1,
+            iat: 1,
+            iss: ''
+        }
+
+        await controller.deleteUser(userId, tokenPayload)
+
+        expect(usersServiceMock.delete).toHaveBeenCalledWith(userId, tokenPayload)
     })
 })

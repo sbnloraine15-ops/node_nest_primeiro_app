@@ -6,7 +6,7 @@ import { PrismaClient } from 'generated/prisma/client'
 
 @Injectable()
 export class PrismasService extends PrismaClient implements OnModuleInit {
-    user: any;
+   
 
 
     constructor() {

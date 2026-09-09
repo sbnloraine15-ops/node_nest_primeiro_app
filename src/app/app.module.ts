@@ -9,7 +9,11 @@ import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),//carrega a variavel de ambiente emm todos os modulos  
+    ConfigModule.forRoot({
+      envFilePath: process.env.NODE_ENV ?
+      `env.${process.env.NODE_ENV}` :
+      `.env`
+    }),//carrega a variavel de ambiente emm todos os modulos  
     TasksModule,
     UsersModule, 
     AuthModule
