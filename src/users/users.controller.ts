@@ -12,7 +12,6 @@ import * as fs from 'node:fs/promises'
 
 
 
-
 @Controller('users')
 export class UsersController {
     constructor(private readonly userService: UsersService) { }
@@ -50,7 +49,7 @@ export class UsersController {
     deleteUser(
         @Param('id', ParseIntPipe) id: number,
         @TokenPayloadParam() TokenPayload: PayloadTokenDto) {
-        return this.userService.delete(id,TokenPayload)
+        return this.userService.delete(id, TokenPayload)
 
     }
 
@@ -58,25 +57,25 @@ export class UsersController {
     @UseInterceptors(FileInterceptor('file'))
     @Post('upload')
     async uploadAvatar(
-    @TokenPayloadParam() tokenPayload: PayloadTokenDto,
-    @UploadedFile(  new ParseFilePipeBuilder().addMaxSizeValidator({
-        maxSize: 1*(1024*1024)
-    }).build({errorHttpStatusCode:HttpStatus.UNPROCESSABLE_ENTITY})) file: Express.Multer.File
-  ) {
+        @TokenPayloadParam() tokenPayload: PayloadTokenDto,
+        @UploadedFile(new ParseFilePipeBuilder().addMaxSizeValidator({
+            maxSize: 1 * (1024 * 1024)
+        }).build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY })) file: Express.Multer.File
+    ) {
 
-    const mimeType = file.mimetype;
-   
-    const fileExtension =  path.extname(file.originalname).toLowerCase().substring(1)
-     //console.log(mimeType)
-     //console.log(fileExtension)
-     
-     const fileName = `${tokenPayload.sub}.${fileExtension}`
-     //console.log(fileName)
+        const mimeType = file.mimetype;
 
-     const fileLocale = path.resolve(process.cwd(),'files', fileName )
+        const fileExtension = path.extname(file.originalname).toLowerCase().substring(1)
+        //console.log(mimeType)
+        //console.log(fileExtension)
 
-     await fs.writeFile(fileLocale, file.buffer)
-    
+        const fileName = `${tokenPayload.sub}.${fileExtension}`
+        //console.log(fileName)
+
+        const fileLocale = path.resolve(process.cwd(), 'files', fileName)
+
+        await fs.writeFile(fileLocale, file.buffer)
+
         return true
     }
 

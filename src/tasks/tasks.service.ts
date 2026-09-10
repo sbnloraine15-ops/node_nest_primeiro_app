@@ -29,7 +29,7 @@ export class TasksService {
             }
         })
         return allTasks
-       
+
     }
 
     async LocalDate(data: string): Promise<ResponseTaskDto[]> {
@@ -92,7 +92,7 @@ export class TasksService {
         }
     }
 
-    async update(id: number, updateTaskdto: updateTaskDto, TokenPayload: PayloadTokenDto): Promise<ResponseTaskDto>  {
+    async update(id: number, updateTaskdto: updateTaskDto, TokenPayload: PayloadTokenDto): Promise<ResponseTaskDto> {
 
         const findTask = await this.prisma.task.findFirst({
             where: {
